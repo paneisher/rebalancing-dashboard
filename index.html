@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="See how a portfolio drifts from its target mix and what rebalancing does about it.">
+  <title>Rebalancing Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <p class="site-name">Rebalancing Dashboard</p>
+  </header>
+
+  <main>
+    <!-- Hero: the one big idea, updated live by js/app.js -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title" class="hero-title">
+        Portfolios drift. Rebalancing pulls them back.
+      </h1>
+      <p class="hero-lede" id="hero-lede">
+        Adjust the settings below to see it happen.
+      </p>
+
+      <div class="drift-bars">
+        <div class="drift-row">
+          <span class="drift-label">Your target</span>
+          <div class="bar" id="target-bar" role="img" aria-label="Target allocation"></div>
+        </div>
+        <div class="drift-row">
+          <span class="drift-label" id="drifted-label">Never rebalanced</span>
+          <div class="bar" id="drifted-bar" role="img" aria-label="Allocation after drifting"></div>
+        </div>
+      </div>
+      <ul class="legend" id="legend"></ul>
+    </section>
+
+    <div class="workspace">
+      <!-- Settings -->
+      <aside class="settings" aria-labelledby="settings-title">
+        <h2 id="settings-title">Your portfolio</h2>
+
+        <label class="field">
+          <span>Starting amount ($)</span>
+          <input type="number" id="initial-value" value="10000" min="100" step="100">
+        </label>
+
+        <label class="field">
+          <span>Years to simulate</span>
+          <input type="number" id="years" value="20" min="1" max="50">
+        </label>
+
+        <fieldset class="field-group">
+          <legend>Target mix (%)</legend>
+          <label class="field field-inline">
+            <span>Stocks</span>
+            <input type="number" id="target-0" value="60" min="0" max="100">
+          </label>
+          <label class="field field-inline">
+            <span>Bonds</span>
+            <input type="number" id="target-1" value="30" min="0" max="100">
+          </label>
+          <label class="field field-inline">
+            <span>Cash</span>
+            <input type="number" id="target-2" value="10" min="0" max="100">
+          </label>
+          <p class="error" id="target-error" role="alert" hidden></p>
+        </fieldset>
+
+        <label class="field">
+          <span>Threshold band (± % points)</span>
+          <input type="number" id="band" value="5" min="1" max="30">
+        </label>
+
+        <div class="scenario">
+          <button type="button" id="new-scenario">Try another market</button>
+          <p class="hint">Market scenario #<span id="seed-label"></span>. The returns are random, not a forecast.</p>
+        </div>
+      </aside>
+
+      <!-- Results -->
+      <div class="results">
+        <section class="block" aria-labelledby="value-title">
+          <h2 id="value-title">Portfolio value over time</h2>
+          <p class="block-note">Same market, three different rebalancing habits.</p>
+          <div class="chart-box"><canvas id="value-chart"></canvas></div>
+        </section>
+
+        <section class="block" aria-labelledby="drift-title">
+          <h2 id="drift-title">How much of the portfolio is in stocks</h2>
+          <p class="block-note">The dashed line is your target. Watch "never rebalance" wander off.</p>
+          <div class="chart-box"><canvas id="drift-chart"></canvas></div>
+        </section>
+
+        <section class="block" aria-labelledby="compare-title">
+          <h2 id="compare-title">Strategy comparison</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Strategy</th>
+                  <th scope="col">Final value</th>
+                  <th scope="col">Rebalances</th>
+                  <th scope="col">Largest drift</th>
+                  <th scope="col">Volatility</th>
+                  <th scope="col">Worst fall</th>
+                </tr>
+              </thead>
+              <tbody id="compare-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Calculator -->
+    <section class="block calculator" aria-labelledby="calc-title">
+      <h2 id="calc-title">What trades would get me back on target?</h2>
+      <p class="block-note">Enter what you hold today. The target mix comes from your settings above.</p>
+
+      <div class="calc-inputs">
+        <label class="field">
+          <span>Stocks ($)</span>
+          <input type="number" id="hold-0" value="8000" min="0" step="100">
+        </label>
+        <label class="field">
+          <span>Bonds ($)</span>
+          <input type="number" id="hold-1" value="1500" min="0" step="100">
+        </label>
+        <label class="field">
+          <span>Cash ($)</span>
+          <input type="number" id="hold-2" value="500" min="0" step="100">
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Asset</th>
+              <th scope="col">You hold</th>
+              <th scope="col">Target</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="calc-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block explainer" aria-labelledby="explain-title">
+      <h2 id="explain-title">What is rebalancing?</h2>
+      <p>
+        You pick a target mix, such as 60% stocks, 30% bonds and 10% cash. Over time the
+        asset that grows fastest takes up more of the portfolio, so your real mix drifts
+        away from what you chose, usually toward more risk.
+      </p>
+      <p>
+        Rebalancing means selling some of what grew and buying what lagged to get back to
+        the target. <strong>Calendar</strong> rebalancing does this on a schedule, such as once a year.
+        <strong>Threshold</strong> rebalancing waits until an asset drifts past a set band, such as
+        5 percentage points.
+      </p>
+      <p>
+        Rebalancing is mainly about keeping your risk where you chose it, not about earning
+        the most. In many scenarios the untouched portfolio ends up worth more simply because it
+        drifted into more stocks, and the comparison table shows the bumpier ride that came with it.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      An educational project. All market returns are randomly generated and are not
+      predictions. Nothing here is financial advice.
+    </p>
+  </footer>
+
+  <!-- Chart.js draws the charts. It must load before our own code. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

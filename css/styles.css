@@ -1,0 +1,390 @@
+/* ==========================================================
+   Rebalancing Dashboard styles
+   1. Design tokens (colours, fonts, spacing)
+   2. Base elements
+   3. Layout
+   4. Components
+   5. Responsive tweaks
+   ========================================================== */
+
+/* 1. Design tokens ---------------------------------------- */
+:root {
+  --color-bg: #e6ecee;
+  --color-surface: #f6f9f9;
+  --color-ink: #14213d;
+  --color-muted: #56677a;
+  --color-line: #c9d3d8;
+  --color-focus: #2b59c3;
+  --color-error: #b3261e;
+
+  /* One colour per asset. app.js reads these for the charts. */
+  --color-stocks: #1f6f78;
+  --color-bonds: #d09a2e;
+  --color-cash: #8a7bb5;
+
+  --font: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+
+  --radius-small: 6px;
+  --radius-large: 14px;
+  --max-width: 1180px;
+}
+
+/* 2. Base elements ---------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+input,
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* 3. Layout ----------------------------------------------- */
+.site-header,
+main,
+.site-footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-inline: var(--space-4);
+}
+
+.site-header {
+  padding-top: var(--space-4);
+}
+
+.site-name {
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  margin-top: var(--space-5);
+}
+
+.results {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-width: 0; /* lets tables scroll instead of stretching the grid */
+}
+
+.site-footer {
+  padding-block: var(--space-5);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+/* 4. Components ------------------------------------------- */
+
+/* Hero: the headline sentence and the two drift bars */
+.hero {
+  padding-top: var(--space-5);
+}
+
+.hero-title {
+  max-width: 18ch;
+  font-size: clamp(2.2rem, 5.5vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.hero-lede {
+  max-width: 60ch;
+  margin-top: var(--space-3);
+  font-size: 1.2rem;
+  color: var(--color-muted);
+}
+
+.hero-lede strong {
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.drift-bars {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.drift-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.drift-label {
+  font-weight: 500;
+}
+
+.bar {
+  display: flex;
+  height: 56px;
+  overflow: hidden;
+  border-radius: var(--radius-small);
+  background: var(--color-line);
+}
+
+.bar-segment {
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-2);
+  color: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 600ms ease;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-muted);
+}
+
+.legend li::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: var(--space-2);
+  border-radius: 2px;
+  background: var(--swatch);
+}
+
+/* Settings panel */
+.settings {
+  position: sticky;
+  top: var(--space-3);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-large);
+  background: var(--color-ink);
+  color: #fff;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.field span {
+  font-size: 0.9rem;
+}
+
+.field input {
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-small);
+  background: #fff;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.field-group {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.field-group legend {
+  margin-bottom: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.field-inline {
+  grid-template-columns: 1fr 5.5rem;
+  align-items: center;
+}
+
+.error {
+  padding: var(--space-2);
+  border-radius: var(--radius-small);
+  background: #fde8e7;
+  color: var(--color-error);
+  font-size: 0.9rem;
+}
+
+.scenario {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+button {
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-small);
+  background: var(--color-bonds);
+  color: var(--color-ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e0ad44;
+}
+
+.hint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Content blocks */
+.block {
+  padding: var(--space-4);
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+}
+
+.block-note {
+  margin-top: var(--space-1);
+  color: var(--color-muted);
+}
+
+.chart-box {
+  position: relative;
+  height: 320px;
+  margin-top: var(--space-3);
+}
+
+.calculator,
+.explainer {
+  margin-top: var(--space-4);
+}
+
+.calc-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 12rem));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.explainer p {
+  max-width: 68ch;
+  margin-top: var(--space-3);
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+th {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.buy {
+  color: var(--color-stocks);
+  font-weight: 700;
+}
+
+.sell {
+  color: var(--color-error);
+  font-weight: 700;
+}
+
+/* 5. Responsive tweaks ------------------------------------ */
+@media (max-width: 860px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bar-segment {
+    padding-inline: var(--space-1);
+    font-size: 0.8rem;
+  }
+
+  .settings {
+    position: static;
+  }
+
+  .drift-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .calc-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-segment {
+    transition: none;
+  }
+}
