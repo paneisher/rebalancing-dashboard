@@ -1,0 +1,11 @@
+{
+  "name": "rebalancing-dashboard",
+  "version": "1.0.0",
+  "description": "An interactive dashboard that shows how portfolios drift and what rebalancing does about it.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
